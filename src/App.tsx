@@ -10,6 +10,7 @@ import Clients from "./pages/Clients";
 import ClientDetail from "./pages/ClientDetail";
 import AssistantHistory from "./pages/AssistantHistory";
 import Login from "./pages/Login";
+import Landing from "./pages/Landing";
 import { AppSidebar } from "./components/AppSidebar";
 import { AuthProvider } from "./components/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -24,6 +25,7 @@ const App = () => (
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/*" element={
               <ProtectedRoute>
@@ -32,7 +34,6 @@ const App = () => (
                     <AppSidebar />
                     <main className="flex-1 overflow-auto">
                       <Routes>
-                        <Route path="/" element={<Dashboard />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/clients" element={<Clients />} />
                         <Route path="/clients/:id" element={<ClientDetail />} />
