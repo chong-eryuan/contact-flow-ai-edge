@@ -4,8 +4,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from '@/hooks/use-toast';
+import { Textarea } from '@/components/ui/textarea';
+import { useCreateClient } from '@/hooks/useClients';
 
 interface AddClientDialogProps {
   open: boolean;
@@ -16,29 +16,39 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    status: '潜在',
-    followUpDays: 7
+    phone: '',
+    company: '',
+    notes: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const createClient = useCreateClient();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 在实际应用中，这里会调用 Supabase 插入数据
-    console.log('添加新客户:', formData);
-    
-    toast({
-      title: "客户添加成功",
-      description: `已成功添加客户 ${formData.name}`,
-    });
+    try {
+      await createClient.mutateAsync({
+        ...formData,
+        email: formData.email || null,
+        phone: formData.phone || null,
+        company: formData.company || null,
+        notes: formData.notes || null,
+        tags: null,
+        last_contact: null
+      });
 
-    // 重置表单并关闭对话框
-    setFormData({
-      name: '',
-      email: '',
-      status: '潜在',
-      followUpDays: 7
-    });
-    onOpenChange(false);
+      // Reset form and close dialog
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        notes: ''
+      });
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Error creating client:', error);
+    }
   };
 
   return (
@@ -53,7 +63,7 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">客户姓名</Label>
+            <Label htmlFor="name">客户姓名 *</Label>
             <Input
               id="name"
               value={formData.name}
@@ -71,33 +81,37 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="请输入邮箱地址"
-              required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">客户状态</Label>
-            <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="潜在">潜在</SelectItem>
-                <SelectItem value="已成交">已成交</SelectItem>
-                <SelectItem value="冷淡">冷淡</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="phone">电话号码</Label>
+            <Input
+              id="phone"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              placeholder="请输入电话号码"
+            />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="followUpDays">跟进间隔（天）</Label>
+            <Label htmlFor="company">公司名称</Label>
             <Input
-              id="followUpDays"
-              type="number"
-              value={formData.followUpDays}
-              onChange={(e) => setFormData({ ...formData, followUpDays: parseInt(e.target.value) || 7 })}
-              min="1"
-              max="365"
+              id="company"
+              value={formData.company}
+              onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+              placeholder="请输入公司名称"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="notes">备注</Label>
+            <Textarea
+              id="notes"
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              placeholder="请输入客户备注信息"
+              rows={3}
             />
           </div>
 
@@ -105,8 +119,8 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               取消
             </Button>
-            <Button type="submit">
-              添加客户
+            <Button type="submit" disabled={createClient.isPending}>
+              {createClient.isPending ? '添加中...' : '添加客户'}
             </Button>
           </div>
         </form>

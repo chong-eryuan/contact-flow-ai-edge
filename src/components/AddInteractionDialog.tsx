@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/hooks/use-toast';
+import { useCreateInteraction } from '@/hooks/useInteractions';
+import { useUpdateClient } from '@/hooks/useClients';
 
 interface AddInteractionDialogProps {
   open: boolean;
@@ -19,23 +20,35 @@ export function AddInteractionDialog({ open, onOpenChange, clientId }: AddIntera
     content: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const createInteraction = useCreateInteraction();
+  const updateClient = useUpdateClient();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 在实际应用中，这里会调用 Supabase 插入数据
-    console.log('添加联系记录:', { ...formData, clientId });
-    
-    toast({
-      title: "联系记录添加成功",
-      description: `已成功添加${formData.type}记录`,
-    });
+    try {
+      // Create the interaction
+      await createInteraction.mutateAsync({
+        client_id: clientId,
+        type: formData.type,
+        content: formData.content
+      });
 
-    // 重置表单并关闭对话框
-    setFormData({
-      type: '通话',
-      content: ''
-    });
-    onOpenChange(false);
+      // Update client's last_contact timestamp
+      await updateClient.mutateAsync({
+        id: clientId,
+        last_contact: new Date().toISOString()
+      });
+
+      // Reset form and close dialog
+      setFormData({
+        type: '通话',
+        content: ''
+      });
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Error creating interaction:', error);
+    }
   };
 
   return (
@@ -56,10 +69,12 @@ export function AddInteractionDialog({ open, onOpenChange, clientId }: AddIntera
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="通话">通话</SelectItem>
-                <SelectItem value="邮件">邮件</SelectItem>
-                <SelectItem value="会议">会议</SelectItem>
-                <SelectItem value="其他">其他</SelectItem>
+                <SelectItem value="通话">📞 通话</SelectItem>
+                <SelectItem value="邮件">📧 邮件</SelectItem>
+                <SelectItem value="会议">🤝 会议</SelectItem>
+                <SelectItem value="微信">💬 微信</SelectItem>
+                <SelectItem value="WhatsApp">📱 WhatsApp</SelectItem>
+                <SelectItem value="其他">📝 其他</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -80,8 +95,8 @@ export function AddInteractionDialog({ open, onOpenChange, clientId }: AddIntera
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               取消
             </Button>
-            <Button type="submit">
-              添加记录
+            <Button type="submit" disabled={createInteraction.isPending}>
+              {createInteraction.isPending ? '添加中...' : '添加记录'}
             </Button>
           </div>
         </form>
