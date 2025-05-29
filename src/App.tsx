@@ -8,6 +8,9 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
 import ClientDetail from "./pages/ClientDetail";
+import Projects from "./pages/Projects";
+import Tasks from "./pages/Tasks";
+import Leads from "./pages/Leads";
 import AssistantHistory from "./pages/AssistantHistory";
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
@@ -37,6 +40,9 @@ const App = () => (
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/clients" element={<Clients />} />
                         <Route path="/clients/:id" element={<ClientDetail />} />
+                        <Route path="/projects" element={<Projects />} />
+                        <Route path="/tasks" element={<Tasks />} />
+                        <Route path="/leads" element={<Leads />} />
                         <Route path="/assistant/history" element={<AssistantHistory />} />
                       </Routes>
                     </main>

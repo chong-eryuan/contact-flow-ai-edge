@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, Users, Bot, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Bot, LogOut, FolderOpen, CheckSquare, Target } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -27,6 +27,21 @@ const menuItems = [
     title: "客户管理",
     url: "/clients",
     icon: Users,
+  },
+  {
+    title: "项目管理",
+    url: "/projects",
+    icon: FolderOpen,
+  },
+  {
+    title: "任务管理",
+    url: "/tasks",
+    icon: CheckSquare,
+  },
+  {
+    title: "线索管理",
+    url: "/leads",
+    icon: Target,
   },
   {
     title: "AI助手历史",
