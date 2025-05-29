@@ -7,11 +7,14 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Target, Eye, Edit, Trash2, Loader2, Calendar, DollarSign, Phone, Mail } from 'lucide-react';
 import { AddLeadDialog } from '@/components/AddLeadDialog';
-import { useLeads, useDeleteLead } from '@/hooks/useLeads';
+import { LeadDetailDialog } from '@/components/LeadDetailDialog';
+import { useLeads, useDeleteLead, Lead } from '@/hooks/useLeads';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 export default function Leads() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [activeTab, setActiveTab] = useState('all');
   const { data: leads = [], isLoading, error } = useLeads();
   const deleteLead = useDeleteLead();
@@ -39,6 +42,11 @@ export default function Leads() {
       case "disqualified": return "已淘汰";
       default: return status;
     }
+  };
+
+  const handleViewLead = (lead: Lead) => {
+    setSelectedLead(lead);
+    setIsDetailDialogOpen(true);
   };
 
   const filteredLeads = getFilteredLeads();
@@ -180,11 +188,21 @@ export default function Leads() {
                     )}
 
                     <div className="flex gap-2 pt-2">
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => handleViewLead(lead)}
+                      >
                         <Eye className="w-4 h-4 mr-1" />
                         查看
                       </Button>
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => handleViewLead(lead)}
+                      >
                         <Edit className="w-4 h-4 mr-1" />
                         编辑
                       </Button>
@@ -224,6 +242,12 @@ export default function Leads() {
       <AddLeadDialog 
         open={isAddDialogOpen} 
         onOpenChange={setIsAddDialogOpen} 
+      />
+      
+      <LeadDetailDialog
+        open={isDetailDialogOpen}
+        onOpenChange={setIsDetailDialogOpen}
+        lead={selectedLead}
       />
     </div>
   );

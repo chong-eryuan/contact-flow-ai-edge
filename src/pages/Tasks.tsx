@@ -7,11 +7,32 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, CheckSquare, Eye, Edit, Trash2, Loader2, Calendar, User, FolderOpen } from 'lucide-react';
 import { AddTaskDialog } from '@/components/AddTaskDialog';
+import { TaskDetailDialog } from '@/components/TaskDetailDialog';
 import { useTasks, useDeleteTask } from '@/hooks/useTasks';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
+interface Task {
+  id: string;
+  user_id: string;
+  project_id: string | null;
+  client_id: string | null;
+  title: string;
+  description: string | null;
+  status: 'new' | 'in_progress' | 'testing' | 'awaiting_feedback' | 'completed';
+  priority: 'low' | 'normal' | 'high' | 'urgent' | null;
+  due_date: string | null;
+  assigned_to: string | null;
+  tags: string[] | null;
+  created_at: string | null;
+  updated_at: string | null;
+  projects?: { title: string } | null;
+  clients?: { name: string } | null;
+}
+
 export default function Tasks() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [activeTab, setActiveTab] = useState('all');
   const { data: tasks = [], isLoading, error } = useTasks();
   const deleteTask = useDeleteTask();
@@ -61,6 +82,11 @@ export default function Tasks() {
       case "low": return "低";
       default: return "普通";
     }
+  };
+
+  const handleViewTask = (task: Task) => {
+    setSelectedTask(task);
+    setIsDetailDialogOpen(true);
   };
 
   const filteredTasks = getFilteredTasks();
@@ -192,11 +218,19 @@ export default function Tasks() {
                       </div>
 
                       <div className="flex gap-2 ml-4">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleViewTask(task)}
+                        >
                           <Eye className="w-4 h-4 mr-1" />
                           查看
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleViewTask(task)}
+                        >
                           <Edit className="w-4 h-4 mr-1" />
                           编辑
                         </Button>
@@ -237,6 +271,12 @@ export default function Tasks() {
       <AddTaskDialog 
         open={isAddDialogOpen} 
         onOpenChange={setIsAddDialogOpen} 
+      />
+      
+      <TaskDetailDialog
+        open={isDetailDialogOpen}
+        onOpenChange={setIsDetailDialogOpen}
+        task={selectedTask}
       />
     </div>
   );
