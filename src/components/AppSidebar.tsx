@@ -19,32 +19,32 @@ import { useAuth } from "@/hooks/useAuth";
 
 const menuItems = [
   {
-    title: "仪表板",
+    title: "Dashboard",
     url: "/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: "客户管理",
+    title: "Client Management",
     url: "/clients",
     icon: Users,
   },
   {
-    title: "项目管理",
+    title: "Project Management",
     url: "/projects",
     icon: FolderOpen,
   },
   {
-    title: "任务管理",
+    title: "Task Management",
     url: "/tasks",
     icon: CheckSquare,
   },
   {
-    title: "线索管理",
+    title: "Lead Management",
     url: "/leads",
     icon: Target,
   },
   {
-    title: "AI助手历史",
+    title: "AI Assistant History",
     url: "/assistant/history",
     icon: Bot,
   },
@@ -68,7 +68,7 @@ export function AppSidebar() {
       
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>主要功能</SidebarGroupLabel>
+          <SidebarGroupLabel>Main Features</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -96,7 +96,7 @@ export function AppSidebar() {
           className="w-full justify-start"
         >
           <LogOut className="w-4 h-4 mr-2" />
-          退出登录
+          Sign Out
         </Button>
       </SidebarFooter>
     </Sidebar>

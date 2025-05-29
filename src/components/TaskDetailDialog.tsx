@@ -1,18 +1,16 @@
 
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useUpdateTask } from '@/hooks/useTasks';
+import { useUpdateTask, useTasks } from '@/hooks/useTasks';
 import { useProjects } from '@/hooks/useProjects';
 import { useClients } from '@/hooks/useClients';
-import { Calendar, User, FolderOpen, CheckSquare, Clock, Flag, FileText, Paperclip } from 'lucide-react';
+import { Calendar, User, FolderOpen, FileText, CheckSquare, AlertTriangle } from 'lucide-react';
 
 interface Task {
   id: string;
@@ -43,12 +41,12 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    project_id: '',
-    client_id: '',
-    status: 'new' as const,
-    priority: 'normal' as const,
+    status: 'new' as Task['status'],
+    priority: 'normal' as Task['priority'],
     due_date: '',
-    assigned_to: ''
+    assigned_to: '',
+    project_id: '',
+    client_id: ''
   });
 
   const updateTask = useUpdateTask();
@@ -56,37 +54,20 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
   const { data: clients = [] } = useClients();
 
   useEffect(() => {
-    if (task) {
+    if (task && open) {
       setFormData({
         title: task.title || '',
         description: task.description || '',
-        project_id: task.project_id || '',
-        client_id: task.client_id || '',
         status: task.status,
         priority: task.priority || 'normal',
-        due_date: task.due_date ? new Date(task.due_date).toISOString().slice(0, 16) : '',
-        assigned_to: task.assigned_to || ''
-      });
-    }
-  }, [task]);
-
-  const handleSave = async () => {
-    if (!task) return;
-    
-    try {
-      await updateTask.mutateAsync({
-        id: task.id,
-        ...formData,
-        project_id: formData.project_id || null,
-        client_id: formData.client_id || null,
-        due_date: formData.due_date ? new Date(formData.due_date).toISOString() : null,
-        assigned_to: formData.assigned_to || null,
+        due_date: task.due_date ? task.due_date.split('T')[0] : '',
+        assigned_to: task.assigned_to || '',
+        project_id: task.project_id || '',
+        client_id: task.client_id || ''
       });
       setIsEditing(false);
-    } catch (error) {
-      console.error('Error updating task:', error);
     }
-  };
+  }, [task, open]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -101,11 +82,11 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case "new": return "新建";
-      case "in_progress": return "进行中";
-      case "testing": return "测试中";
-      case "awaiting_feedback": return "等待反馈";
-      case "completed": return "已完成";
+      case "new": return "New";
+      case "in_progress": return "In Progress";
+      case "testing": return "Testing";
+      case "awaiting_feedback": return "Awaiting Feedback";
+      case "completed": return "Completed";
       default: return status;
     }
   };
@@ -122,11 +103,33 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
 
   const getPriorityText = (priority: string | null) => {
     switch (priority) {
-      case "urgent": return "紧急";
-      case "high": return "高";
-      case "normal": return "普通";
-      case "low": return "低";
-      default: return "普通";
+      case "urgent": return "Urgent";
+      case "high": return "High";
+      case "normal": return "Normal";
+      case "low": return "Low";
+      default: return "Normal";
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!task) return;
+
+    try {
+      await updateTask.mutateAsync({
+        id: task.id,
+        title: formData.title,
+        description: formData.description || null,
+        status: formData.status,
+        priority: formData.priority,
+        due_date: formData.due_date || null,
+        assigned_to: formData.assigned_to || null,
+        project_id: formData.project_id || null,
+        client_id: formData.client_id || null
+      });
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating task:', error);
     }
   };
 
@@ -134,284 +137,235 @@ export function TaskDetailDialog({ open, onOpenChange, task }: TaskDetailDialogP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>{task.title}</span>
-            <div className="flex items-center gap-2">
-              <Badge className={getStatusColor(task.status)}>
-                {getStatusText(task.status)}
-              </Badge>
-              <Badge variant="outline" className={getPriorityColor(task.priority)}>
-                {getPriorityText(task.priority)}
-              </Badge>
-              <Button 
-                variant={isEditing ? "destructive" : "outline"} 
-                size="sm"
-                onClick={() => setIsEditing(!isEditing)}
-              >
-                {isEditing ? '取消' : '编辑'}
-              </Button>
-              {isEditing && (
-                <Button 
-                  size="sm" 
-                  onClick={handleSave}
-                  disabled={updateTask.isPending}
-                >
-                  {updateTask.isPending ? '保存中...' : '保存'}
-                </Button>
-              )}
-            </div>
+          <DialogTitle className="flex items-center gap-2">
+            <CheckSquare className="w-5 h-5" />
+            {isEditing ? 'Edit Task' : 'Task Details'}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing ? 'Update task information' : 'View task details and progress'}
+          </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="task" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="task">任务</TabsTrigger>
-            <TabsTrigger value="information">信息</TabsTrigger>
-            <TabsTrigger value="notes">备注</TabsTrigger>
-            <TabsTrigger value="relations">关联</TabsTrigger>
-          </TabsList>
+        {isEditing ? (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Task Title *</Label>
+              <Input
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                required
+              />
+            </div>
 
-          <TabsContent value="task" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CheckSquare className="w-5 h-5" />
-                  任务详情
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="title">任务标题</Label>
-                  {isEditing ? (
-                    <Input
-                      id="title"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    />
-                  ) : (
-                    <div className="p-2 bg-gray-50 rounded">{task.title}</div>
-                  )}
-                </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="status">Status</Label>
+                <Select value={formData.status} onValueChange={(value: Task['status']) => setFormData({ ...formData, status: value })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="testing">Testing</SelectItem>
+                    <SelectItem value="awaiting_feedback">Awaiting Feedback</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="priority">Priority</Label>
+                <Select value={formData.priority || 'normal'} onValueChange={(value: Task['priority']) => setFormData({ ...formData, priority: value })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="normal">Normal</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="description">任务描述</Label>
-                  {isEditing ? (
-                    <Textarea
-                      id="description"
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      rows={4}
-                    />
-                  ) : (
-                    <div className="p-2 bg-gray-50 rounded min-h-[100px]">
-                      {task.description || '无描述'}
-                    </div>
-                  )}
-                </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="project_id">Project</Label>
+                <Select value={formData.project_id} onValueChange={(value) => setFormData({ ...formData, project_id: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select project" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">No Project</SelectItem>
+                    {projects.map((project) => (
+                      <SelectItem key={project.id} value={project.id}>
+                        {project.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="client_id">Client</Label>
+                <Select value={formData.client_id} onValueChange={(value) => setFormData({ ...formData, client_id: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select client" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">No Client</SelectItem>
+                    {clients.map((client) => (
+                      <SelectItem key={client.id} value={client.id}>
+                        {client.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="status">状态</Label>
-                    {isEditing ? (
-                      <Select value={formData.status} onValueChange={(value: any) => setFormData({ ...formData, status: value })}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="new">新建</SelectItem>
-                          <SelectItem value="in_progress">进行中</SelectItem>
-                          <SelectItem value="testing">测试中</SelectItem>
-                          <SelectItem value="awaiting_feedback">等待反馈</SelectItem>
-                          <SelectItem value="completed">已完成</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <div className="p-2 bg-gray-50 rounded">{getStatusText(task.status)}</div>
-                    )}
-                  </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="due_date">Due Date</Label>
+                <Input
+                  id="due_date"
+                  type="date"
+                  value={formData.due_date}
+                  onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="assigned_to">Assigned To</Label>
+                <Input
+                  id="assigned_to"
+                  value={formData.assigned_to}
+                  onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
+                  placeholder="Enter assignee name"
+                />
+              </div>
+            </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="priority" className="flex items-center gap-2">
-                      <Flag className="w-4 h-4" />
-                      优先级
-                    </Label>
-                    {isEditing ? (
-                      <Select value={formData.priority} onValueChange={(value: any) => setFormData({ ...formData, priority: value })}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="low">低</SelectItem>
-                          <SelectItem value="normal">普通</SelectItem>
-                          <SelectItem value="high">高</SelectItem>
-                          <SelectItem value="urgent">紧急</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <div className="p-2 bg-gray-50 rounded">{getPriorityText(task.priority)}</div>
-                    )}
-                  </div>
-                </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                rows={4}
+                placeholder="Task description and requirements..."
+              />
+            </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="due_date" className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      截止日期
-                    </Label>
-                    {isEditing ? (
-                      <Input
-                        id="due_date"
-                        type="datetime-local"
-                        value={formData.due_date}
-                        onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-                      />
-                    ) : (
-                      <div className="p-2 bg-gray-50 rounded">
-                        {task.due_date ? new Date(task.due_date).toLocaleString('zh-CN') : '无截止日期'}
-                      </div>
-                    )}
-                  </div>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={updateTask.isPending}>
+                {updateTask.isPending ? 'Updating...' : 'Update Task'}
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">{task.title}</h2>
+              <div className="flex gap-2">
+                <Badge className={getStatusColor(task.status)}>
+                  {getStatusText(task.status)}
+                </Badge>
+                <Badge variant="outline" className={getPriorityColor(task.priority)}>
+                  {getPriorityText(task.priority)}
+                </Badge>
+              </div>
+            </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="assigned_to" className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      负责人
-                    </Label>
-                    {isEditing ? (
-                      <Input
-                        id="assigned_to"
-                        value={formData.assigned_to}
-                        onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
-                      />
-                    ) : (
-                      <div className="p-2 bg-gray-50 rounded">{task.assigned_to || '未分配'}</div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="information">
-            <Card>
-              <CardHeader>
-                <CardTitle>基本信息</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {task.projects && (
+                <div className="flex items-center gap-3">
+                  <FolderOpen className="w-5 h-5 text-gray-400" />
                   <div>
-                    <Label>创建时间</Label>
-                    <div className="p-2 bg-gray-50 rounded">
-                      {task.created_at ? new Date(task.created_at).toLocaleString('zh-CN') : '-'}
-                    </div>
+                    <p className="text-sm text-gray-600">Project</p>
+                    <p className="font-medium">{task.projects.title}</p>
                   </div>
+                </div>
+              )}
+
+              {task.clients && (
+                <div className="flex items-center gap-3">
+                  <User className="w-5 h-5 text-gray-400" />
                   <div>
-                    <Label>更新时间</Label>
-                    <div className="p-2 bg-gray-50 rounded">
-                      {task.updated_at ? new Date(task.updated_at).toLocaleString('zh-CN') : '-'}
-                    </div>
+                    <p className="text-sm text-gray-600">Client</p>
+                    <p className="font-medium">{task.clients.name}</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              )}
 
-          <TabsContent value="notes">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
-                  备注与附件
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label>任务备注</Label>
-                  <Textarea 
-                    placeholder="添加任务备注..." 
-                    rows={6}
-                    className="w-full"
-                  />
-                </div>
-                <div>
-                  <Label className="flex items-center gap-2">
-                    <Paperclip className="w-4 h-4" />
-                    附件
-                  </Label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center text-gray-500">
-                    拖拽文件到此处或点击上传
+              {task.due_date && (
+                <div className="flex items-center gap-3">
+                  <Calendar className="w-5 h-5 text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-600">Due Date</p>
+                    <p className="font-medium">{new Date(task.due_date).toLocaleDateString()}</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              )}
 
-          <TabsContent value="relations">
-            <Card>
-              <CardHeader>
-                <CardTitle>关联项目和客户</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="project_id" className="flex items-center gap-2">
-                      <FolderOpen className="w-4 h-4" />
-                      关联项目
-                    </Label>
-                    {isEditing ? (
-                      <Select value={formData.project_id} onValueChange={(value) => setFormData({ ...formData, project_id: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="选择项目（可选）" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="">无关联项目</SelectItem>
-                          {projects.map((project) => (
-                            <SelectItem key={project.id} value={project.id}>
-                              {project.title}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <div className="p-2 bg-gray-50 rounded">
-                        {task.projects?.title || '无关联项目'}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="client_id" className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      关联客户
-                    </Label>
-                    {isEditing ? (
-                      <Select value={formData.client_id} onValueChange={(value) => setFormData({ ...formData, client_id: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="选择客户（可选）" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="">无关联客户</SelectItem>
-                          {clients.map((client) => (
-                            <SelectItem key={client.id} value={client.id}>
-                              {client.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <div className="p-2 bg-gray-50 rounded">
-                        {task.clients?.name || '无关联客户'}
-                      </div>
-                    )}
+              {task.assigned_to && (
+                <div className="flex items-center gap-3">
+                  <User className="w-5 h-5 text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-600">Assigned To</p>
+                    <p className="font-medium">{task.assigned_to}</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              )}
+
+              {task.created_at && (
+                <div className="flex items-center gap-3">
+                  <Calendar className="w-5 h-5 text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-600">Created</p>
+                    <p className="font-medium">{new Date(task.created_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              )}
+
+              {task.updated_at && (
+                <div className="flex items-center gap-3">
+                  <Calendar className="w-5 h-5 text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-600">Last Updated</p>
+                    <p className="font-medium">{new Date(task.updated_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {task.description && (
+              <div className="border-t pt-4">
+                <div className="flex items-start gap-3">
+                  <FileText className="w-5 h-5 text-gray-400 mt-1" />
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-600 mb-2">Description</p>
+                    <p className="text-gray-800 whitespace-pre-wrap">{task.description}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
+                Close
+              </Button>
+              <Button onClick={() => setIsEditing(true)}>
+                Edit Task
+              </Button>
+            </div>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

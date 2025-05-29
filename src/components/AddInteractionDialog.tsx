@@ -16,7 +16,7 @@ interface AddInteractionDialogProps {
 
 export function AddInteractionDialog({ open, onOpenChange, clientId }: AddInteractionDialogProps) {
   const [formData, setFormData] = useState({
-    type: '通话',
+    type: 'Phone Call',
     content: ''
   });
 
@@ -42,7 +42,7 @@ export function AddInteractionDialog({ open, onOpenChange, clientId }: AddIntera
 
       // Reset form and close dialog
       setFormData({
-        type: '通话',
+        type: 'Phone Call',
         content: ''
       });
       onOpenChange(false);
@@ -55,37 +55,37 @@ export function AddInteractionDialog({ open, onOpenChange, clientId }: AddIntera
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>新增联系记录</DialogTitle>
+          <DialogTitle>Add Contact Record</DialogTitle>
           <DialogDescription>
-            记录与客户的最新联系情况
+            Record the latest contact with this client
           </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="type">联系类型</Label>
+            <Label htmlFor="type">Contact Type</Label>
             <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="通话">📞 通话</SelectItem>
-                <SelectItem value="邮件">📧 邮件</SelectItem>
-                <SelectItem value="会议">🤝 会议</SelectItem>
-                <SelectItem value="微信">💬 微信</SelectItem>
+                <SelectItem value="Phone Call">📞 Phone Call</SelectItem>
+                <SelectItem value="Email">📧 Email</SelectItem>
+                <SelectItem value="Meeting">🤝 Meeting</SelectItem>
+                <SelectItem value="WeChat">💬 WeChat</SelectItem>
                 <SelectItem value="WhatsApp">📱 WhatsApp</SelectItem>
-                <SelectItem value="其他">📝 其他</SelectItem>
+                <SelectItem value="Other">📝 Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="content">联系内容</Label>
+            <Label htmlFor="content">Contact Content</Label>
             <Textarea
               id="content"
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              placeholder="请详细描述此次联系的内容、讨论的问题和结果..."
+              placeholder="Please describe the content of this contact, issues discussed, and outcomes..."
               rows={4}
               required
             />
@@ -93,10 +93,10 @@ export function AddInteractionDialog({ open, onOpenChange, clientId }: AddIntera
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              取消
+              Cancel
             </Button>
             <Button type="submit" disabled={createInteraction.isPending}>
-              {createInteraction.isPending ? '添加中...' : '添加记录'}
+              {createInteraction.isPending ? 'Adding...' : 'Add Record'}
             </Button>
           </div>
         </form>

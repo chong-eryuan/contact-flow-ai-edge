@@ -36,10 +36,10 @@ export default function Leads() {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case "new": return "新线索";
-      case "contacted": return "已联系";
-      case "qualified": return "已验证";
-      case "disqualified": return "已淘汰";
+      case "new": return "New Lead";
+      case "contacted": return "Contacted";
+      case "qualified": return "Qualified";
+      case "disqualified": return "Disqualified";
       default: return status;
     }
   };
@@ -55,7 +55,7 @@ export default function Leads() {
     return (
       <div className="p-6">
         <div className="text-center text-red-600">
-          加载线索数据时出现错误: {error.message}
+          Error loading leads data: {error.message}
         </div>
       </div>
     );
@@ -67,13 +67,13 @@ export default function Leads() {
         <div className="flex items-center gap-4">
           <SidebarTrigger />
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">线索管理</h1>
-            <p className="text-gray-600">管理您的所有销售线索</p>
+            <h1 className="text-3xl font-bold text-gray-900">Lead Management</h1>
+            <p className="text-gray-600">Manage all your sales leads</p>
           </div>
         </div>
         <Button onClick={() => setIsAddDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
-          新建线索
+          New Lead
         </Button>
       </div>
 
@@ -81,44 +81,44 @@ export default function Leads() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5" />
-            线索列表
+            Lead List
           </CardTitle>
           <CardDescription>
-            查看和管理您的销售线索
+            View and manage your sales leads
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
             <TabsList>
-              <TabsTrigger value="all">全部</TabsTrigger>
-              <TabsTrigger value="new">新线索</TabsTrigger>
-              <TabsTrigger value="contacted">已联系</TabsTrigger>
-              <TabsTrigger value="qualified">已验证</TabsTrigger>
-              <TabsTrigger value="disqualified">已淘汰</TabsTrigger>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="new">New</TabsTrigger>
+              <TabsTrigger value="contacted">Contacted</TabsTrigger>
+              <TabsTrigger value="qualified">Qualified</TabsTrigger>
+              <TabsTrigger value="disqualified">Disqualified</TabsTrigger>
             </TabsList>
           </Tabs>
 
           <div className="mb-6">
             <div className="text-sm text-gray-600">
-              总共 {filteredLeads.length} 个线索
+              Total {filteredLeads.length} leads
             </div>
           </div>
           
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-6 h-6 animate-spin" />
-              <span className="ml-2">加载中...</span>
+              <span className="ml-2">Loading...</span>
             </div>
           ) : filteredLeads.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Target className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-              <p>暂无线索</p>
+              <p>No leads found</p>
               <Button 
                 className="mt-4" 
                 variant="outline"
                 onClick={() => setIsAddDialogOpen(true)}
               >
-                创建第一个线索
+                Create your first lead
               </Button>
             </div>
           ) : (
@@ -134,14 +134,14 @@ export default function Leads() {
                     </div>
                     {lead.contact_name && (
                       <CardDescription className="text-sm">
-                        联系人：{lead.contact_name}
+                        Contact: {lead.contact_name}
                       </CardDescription>
                     )}
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {lead.company && (
                       <div className="text-sm text-gray-600">
-                        公司：{lead.company}
+                        Company: {lead.company}
                       </div>
                     )}
 
@@ -163,26 +163,26 @@ export default function Leads() {
                     {lead.value && (
                       <div className="flex items-center text-sm text-gray-600">
                         <DollarSign className="w-4 h-4 mr-1" />
-                        预估价值：¥{lead.value.toLocaleString()}
+                        Estimated Value: ${lead.value.toLocaleString()}
                       </div>
                     )}
                     
                     {lead.target_date && (
                       <div className="flex items-center text-sm text-gray-600">
                         <Calendar className="w-4 h-4 mr-1" />
-                        目标日期：{new Date(lead.target_date).toLocaleDateString('zh-CN')}
+                        Target Date: {new Date(lead.target_date).toLocaleDateString()}
                       </div>
                     )}
 
                     {lead.source && (
                       <div className="text-sm text-gray-600">
-                        来源：{lead.source}
+                        Source: {lead.source}
                       </div>
                     )}
 
                     {lead.notes && (
                       <div className="text-sm text-gray-600">
-                        备注：{lead.notes.substring(0, 50)}
+                        Notes: {lead.notes.substring(0, 50)}
                         {lead.notes.length > 50 && '...'}
                       </div>
                     )}
@@ -195,7 +195,7 @@ export default function Leads() {
                         onClick={() => handleViewLead(lead)}
                       >
                         <Eye className="w-4 h-4 mr-1" />
-                        查看
+                        View
                       </Button>
                       <Button 
                         variant="outline" 
@@ -204,7 +204,7 @@ export default function Leads() {
                         onClick={() => handleViewLead(lead)}
                       >
                         <Edit className="w-4 h-4 mr-1" />
-                        编辑
+                        Edit
                       </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -214,18 +214,18 @@ export default function Leads() {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>确认删除</AlertDialogTitle>
+                            <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
                             <AlertDialogDescription>
-                              确定要删除线索 "{lead.title}" 吗？此操作无法撤销。
+                              Are you sure you want to delete lead "{lead.title}"? This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>取消</AlertDialogCancel>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => deleteLead.mutate(lead.id)}
                               className="bg-red-600 hover:bg-red-700"
                             >
-                              删除
+                              Delete
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>

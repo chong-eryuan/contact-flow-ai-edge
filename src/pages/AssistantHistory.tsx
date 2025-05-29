@@ -10,8 +10,8 @@ export default function AssistantHistory() {
   const handleCopy = (text: string, type: 'prompt' | 'response') => {
     navigator.clipboard.writeText(text);
     toast({
-      title: "已复制到剪贴板",
-      description: `${type === 'prompt' ? '提示' : '回复'}内容已复制`,
+      title: "Copied to clipboard",
+      description: `${type === 'prompt' ? 'Prompt' : 'Response'} content has been copied`,
     });
   };
 
@@ -20,8 +20,8 @@ export default function AssistantHistory() {
       <div className="flex items-center gap-4">
         <SidebarTrigger />
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">AI助手历史</h1>
-          <p className="text-gray-600">查看您与AI助手的所有对话记录</p>
+          <h1 className="text-3xl font-bold text-gray-900">AI Assistant History</h1>
+          <p className="text-gray-600">View all your conversations with the AI assistant</p>
         </div>
       </div>
 
@@ -29,17 +29,17 @@ export default function AssistantHistory() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bot className="w-5 h-5" />
-            对话历史
+            Conversation History
           </CardTitle>
           <CardDescription>
-            按时间倒序显示所有AI对话记录
+            All AI conversations displayed in reverse chronological order
           </CardDescription>
         </CardHeader>
         <CardContent>
           {mockAiRequests.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Bot className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-              <p>暂无AI对话记录</p>
+              <p>No AI conversation history found</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -51,15 +51,15 @@ export default function AssistantHistory() {
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-gray-500" />
                         <span className="text-sm text-gray-600">
-                          {new Date(request.created_at).toLocaleString('zh-CN')}
+                          {new Date(request.created_at).toLocaleString()}
                         </span>
                       </div>
                     </div>
 
-                    {/* 用户提示 */}
+                    {/* User Prompt */}
                     <div className="bg-blue-50 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-blue-900">您的提示</h4>
+                        <h4 className="font-medium text-blue-900">Your Prompt</h4>
                         <Button 
                           variant="ghost" 
                           size="sm"
@@ -71,12 +71,12 @@ export default function AssistantHistory() {
                       <p className="text-blue-800 whitespace-pre-wrap">{request.prompt}</p>
                     </div>
 
-                    {/* AI回复 */}
+                    {/* AI Response */}
                     <div className="bg-gray-50 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium text-gray-900 flex items-center gap-2">
                           <Bot className="w-4 h-4" />
-                          AI回复
+                          AI Response
                         </h4>
                         <Button 
                           variant="ghost" 

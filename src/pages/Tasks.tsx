@@ -55,11 +55,11 @@ export default function Tasks() {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case "new": return "新建";
-      case "in_progress": return "进行中";
-      case "testing": return "测试中";
-      case "awaiting_feedback": return "等待反馈";
-      case "completed": return "已完成";
+      case "new": return "New";
+      case "in_progress": return "In Progress";
+      case "testing": return "Testing";
+      case "awaiting_feedback": return "Awaiting Feedback";
+      case "completed": return "Completed";
       default: return status;
     }
   };
@@ -76,11 +76,11 @@ export default function Tasks() {
 
   const getPriorityText = (priority: string | null) => {
     switch (priority) {
-      case "urgent": return "紧急";
-      case "high": return "高";
-      case "normal": return "普通";
-      case "low": return "低";
-      default: return "普通";
+      case "urgent": return "Urgent";
+      case "high": return "High";
+      case "normal": return "Normal";
+      case "low": return "Low";
+      default: return "Normal";
     }
   };
 
@@ -95,7 +95,7 @@ export default function Tasks() {
     return (
       <div className="p-6">
         <div className="text-center text-red-600">
-          加载任务数据时出现错误: {error.message}
+          Error loading tasks data: {error.message}
         </div>
       </div>
     );
@@ -107,13 +107,13 @@ export default function Tasks() {
         <div className="flex items-center gap-4">
           <SidebarTrigger />
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">任务管理</h1>
-            <p className="text-gray-600">管理您的所有任务</p>
+            <h1 className="text-3xl font-bold text-gray-900">Task Management</h1>
+            <p className="text-gray-600">Manage all your tasks</p>
           </div>
         </div>
         <Button onClick={() => setIsAddDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
-          新建任务
+          New Task
         </Button>
       </div>
 
@@ -121,45 +121,45 @@ export default function Tasks() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CheckSquare className="w-5 h-5" />
-            任务列表
+            Task List
           </CardTitle>
           <CardDescription>
-            查看和管理您的任务
+            View and manage your tasks
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
             <TabsList>
-              <TabsTrigger value="all">全部</TabsTrigger>
-              <TabsTrigger value="new">新建</TabsTrigger>
-              <TabsTrigger value="in_progress">进行中</TabsTrigger>
-              <TabsTrigger value="testing">测试中</TabsTrigger>
-              <TabsTrigger value="awaiting_feedback">等待反馈</TabsTrigger>
-              <TabsTrigger value="completed">已完成</TabsTrigger>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="new">New</TabsTrigger>
+              <TabsTrigger value="in_progress">In Progress</TabsTrigger>
+              <TabsTrigger value="testing">Testing</TabsTrigger>
+              <TabsTrigger value="awaiting_feedback">Awaiting Feedback</TabsTrigger>
+              <TabsTrigger value="completed">Completed</TabsTrigger>
             </TabsList>
           </Tabs>
 
           <div className="mb-6">
             <div className="text-sm text-gray-600">
-              总共 {filteredTasks.length} 个任务
+              Total {filteredTasks.length} tasks
             </div>
           </div>
           
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-6 h-6 animate-spin" />
-              <span className="ml-2">加载中...</span>
+              <span className="ml-2">Loading...</span>
             </div>
           ) : filteredTasks.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <CheckSquare className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-              <p>暂无任务</p>
+              <p>No tasks found</p>
               <Button 
                 className="mt-4" 
                 variant="outline"
                 onClick={() => setIsAddDialogOpen(true)}
               >
-                创建第一个任务
+                Create your first task
               </Button>
             </div>
           ) : (
@@ -204,14 +204,14 @@ export default function Tasks() {
                           {task.due_date && (
                             <div className="flex items-center">
                               <Calendar className="w-4 h-4 mr-1" />
-                              截止：{new Date(task.due_date).toLocaleDateString('zh-CN')}
+                              Due: {new Date(task.due_date).toLocaleDateString()}
                             </div>
                           )}
 
                           {task.assigned_to && (
                             <div className="flex items-center">
                               <User className="w-4 h-4 mr-1" />
-                              负责人：{task.assigned_to}
+                              Assigned: {task.assigned_to}
                             </div>
                           )}
                         </div>
@@ -224,7 +224,7 @@ export default function Tasks() {
                           onClick={() => handleViewTask(task)}
                         >
                           <Eye className="w-4 h-4 mr-1" />
-                          查看
+                          View
                         </Button>
                         <Button 
                           variant="outline" 
@@ -232,7 +232,7 @@ export default function Tasks() {
                           onClick={() => handleViewTask(task)}
                         >
                           <Edit className="w-4 h-4 mr-1" />
-                          编辑
+                          Edit
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
@@ -242,18 +242,18 @@ export default function Tasks() {
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>确认删除</AlertDialogTitle>
+                              <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
                               <AlertDialogDescription>
-                                确定要删除任务 "{task.title}" 吗？此操作无法撤销。
+                                Are you sure you want to delete task "{task.title}"? This action cannot be undone.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel>取消</AlertDialogCancel>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction
                                 onClick={() => deleteTask.mutate(task.id)}
                                 className="bg-red-600 hover:bg-red-700"
                               >
-                                删除
+                                Delete
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>

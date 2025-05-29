@@ -11,7 +11,7 @@ export default function Dashboard() {
   const [followUpClients, setFollowUpClients] = useState<any[]>([]);
 
   useEffect(() => {
-    // 筛选需要跟进的客户
+    // Filter clients that need follow-up
     const now = new Date();
     const clientsNeedingFollowUp = mockClients.filter(client => {
       const lastContact = new Date(client.last_contact);
@@ -22,32 +22,32 @@ export default function Dashboard() {
   }, []);
 
   const handleMarkContacted = (clientId: string) => {
-    // 更新客户的最后联系时间
+    // Update client's last contact time
     setFollowUpClients(prev => prev.filter(client => client.id !== clientId));
-    console.log('标记客户已联系:', clientId);
+    console.log('Mark client as contacted:', clientId);
   };
 
   const stats = [
     {
-      title: "总客户数",
+      title: "Total Clients",
       value: mockClients.length,
       icon: Users,
       color: "text-blue-600"
     },
     {
-      title: "已成交客户",
+      title: "Closed Deals",
       value: mockClients.filter(c => c.status === "已成交").length,
       icon: TrendingUp,
       color: "text-green-600"
     },
     {
-      title: "潜在客户",
+      title: "Prospects",
       value: mockClients.filter(c => c.status === "潜在").length,
       icon: Calendar,
       color: "text-yellow-600"
     },
     {
-      title: "待跟进",
+      title: "Follow-up Required",
       value: followUpClients.length,
       icon: Clock,
       color: "text-red-600"
@@ -69,13 +69,13 @@ export default function Dashboard() {
         <div className="flex items-center gap-4">
           <SidebarTrigger />
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">仪表板</h1>
-            <p className="text-gray-600">欢迎回到AI Micro CRM系统</p>
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p className="text-gray-600">Welcome back to AI Micro CRM</p>
           </div>
         </div>
       </div>
 
-      {/* 统计卡片 */}
+      {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
           <Card key={index}>
@@ -92,22 +92,22 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* 待跟进客户 */}
+      {/* Follow-up Clients */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="w-5 h-5 text-red-600" />
-            待跟进客户
+            Follow-up Required
           </CardTitle>
           <CardDescription>
-            以下客户需要及时跟进联系
+            These clients need timely follow-up contact
           </CardDescription>
         </CardHeader>
         <CardContent>
           {followUpClients.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-              <p>暂无需要跟进的客户</p>
+              <p>No clients require follow-up at this time</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -124,16 +124,16 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="text-sm font-medium">上次联系</p>
+                      <p className="text-sm font-medium">Last Contact</p>
                       <p className="text-sm text-gray-600">
-                        {new Date(client.last_contact).toLocaleDateString('zh-CN')}
+                        {new Date(client.last_contact).toLocaleDateString()}
                       </p>
                     </div>
                     <Button 
                       size="sm"
                       onClick={() => handleMarkContacted(client.id)}
                     >
-                      标记为已联系
+                      Mark as Contacted
                     </Button>
                   </div>
                 </div>
