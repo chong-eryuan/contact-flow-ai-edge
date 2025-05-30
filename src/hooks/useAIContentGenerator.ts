@@ -18,7 +18,7 @@ export function useAIConversations() {
     queryKey: ['ai-conversations'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('ai_conversations' as any)
+        .from('ai_conversations')
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -37,11 +37,18 @@ export function useGenerateContent() {
       contentType: string; 
       context?: string;
     }) => {
+      console.log('Calling AI content generator with params:', params);
+      
       const { data, error } = await supabase.functions.invoke('ai-content-generator', {
         body: params
       });
       
-      if (error) throw error;
+      console.log('AI content generator response:', { data, error });
+      
+      if (error) {
+        console.error('AI content generator error:', error);
+        throw error;
+      }
       return data;
     },
     onSuccess: () => {

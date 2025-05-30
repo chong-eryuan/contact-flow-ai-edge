@@ -20,20 +20,45 @@ serve(async (req) => {
   }
 
   try {
+    console.log('AI content generator function called');
+    
+    // Get request body
     const { prompt, contentType, context } = await req.json();
+    console.log('Request params:', { prompt, contentType, context });
     
-    const authHeader = req.headers.get('Authorization')!;
-    const token = authHeader.replace('Bearer ', '');
-    
-    const { data: { user } } = await supabase.auth.getUser(token);
-    if (!user) {
-      throw new Error('Unauthorized');
+    // Get user from auth header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('No authorization header');
+      return new Response(JSON.stringify({ error: 'No authorization header' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
+    
+    const token = authHeader.replace('Bearer ', '');
+    console.log('Auth token received');
+    
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) {
+      console.error('User authentication failed:', userError);
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
+    console.log('User authenticated:', user.id);
 
     if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+      console.error('OpenAI API key not configured');
+      return new Response(JSON.stringify({ error: 'OpenAI API key not configured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
+    // Create system prompt based on content type
     let systemPrompt = '';
     switch (contentType) {
       case 'follow-up-email':
@@ -55,6 +80,8 @@ serve(async (req) => {
         systemPrompt = 'You are a helpful business assistant. Generate professional, relevant content based on the user\'s request.';
     }
 
+    console.log('Calling OpenAI API');
+    
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -72,8 +99,18 @@ serve(async (req) => {
       }),
     });
 
+    if (!response.ok) {
+      console.error('OpenAI API error:', response.status, await response.text());
+      return new Response(JSON.stringify({ error: 'OpenAI API error' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const data = await response.json();
     const generatedContent = data.choices[0].message.content;
+    
+    console.log('Content generated successfully');
 
     // Save the conversation to database
     const { data: savedConversation, error: saveError } = await supabase
@@ -83,13 +120,16 @@ serve(async (req) => {
         prompt,
         response: generatedContent,
         content_type: contentType,
-        context,
+        context: context || null,
       })
       .select()
       .single();
 
     if (saveError) {
       console.error('Error saving conversation:', saveError);
+      // Don't fail the request if saving fails, just log it
+    } else {
+      console.log('Conversation saved successfully');
     }
 
     return new Response(JSON.stringify({ 
@@ -100,7 +140,10 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in ai-content-generator function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: 'Internal server error',
+      details: error.message 
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
