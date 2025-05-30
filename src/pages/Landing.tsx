@@ -21,10 +21,10 @@ export default function Landing() {
           </div>
           <div className="space-x-4">
             <Link to="/login">
-              <Button variant="ghost">登录</Button>
+              <Button variant="ghost">Sign In</Button>
             </Link>
             <Link to="/login">
-              <Button>免费开始</Button>
+              <Button>Get Started Free</Button>
             </Link>
           </div>
         </nav>
@@ -33,37 +33,37 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
         <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          智能客户关系管理系统
+          AI-Powered Customer Relationship Management
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          借助AI技术，轻松管理客户关系，自动跟进提醒，提升销售效率。
-          专为中小企业打造的简单易用的CRM解决方案。
+          Leverage AI technology to easily manage customer relationships, automate follow-up reminders, and boost sales efficiency.
+          A simple and intuitive CRM solution designed for small to medium businesses.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <input
             type="email"
-            placeholder="输入您的邮箱地址"
+            placeholder="Enter your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="px-4 py-3 rounded-lg border border-gray-300 w-full sm:w-80"
           />
           <Link to="/login">
             <Button size="lg" className="w-full sm:w-auto">
-              立即开始使用
+              Start Using Now
             </Button>
           </Link>
         </div>
         <p className="text-sm text-gray-500">
-          免费试用 • 无需信用卡 • 随时可以取消
+          Free trial • No credit card required • Cancel anytime
         </p>
       </section>
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">为什么选择 AI Micro CRM？</h2>
+          <h2 className="text-3xl font-bold mb-4">Why Choose AI Micro CRM?</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            我们专注于提供简单、高效的客户管理工具，让您专注于业务增长
+            We focus on providing simple, efficient customer management tools that let you focus on business growth
           </p>
         </div>
         
@@ -71,11 +71,11 @@ export default function Landing() {
           <Card className="text-center">
             <CardHeader>
               <Users className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-              <CardTitle>智能客户管理</CardTitle>
+              <CardTitle>Smart Customer Management</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                集中管理所有客户信息，智能分类潜在客户、已成交客户和冷淡客户
+                Centrally manage all customer information with intelligent categorization of prospects, closed deals, and inactive customers
               </CardDescription>
             </CardContent>
           </Card>
@@ -83,11 +83,11 @@ export default function Landing() {
           <Card className="text-center">
             <CardHeader>
               <Calendar className="w-12 h-12 text-green-500 mx-auto mb-4" />
-              <CardTitle>自动跟进提醒</CardTitle>
+              <CardTitle>Automated Follow-up Reminders</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                基于客户设置的跟进周期，自动提醒需要联系的客户，不错过任何机会
+                Based on customer-specific follow-up cycles, automatically remind you of clients who need contact, never miss an opportunity
               </CardDescription>
             </CardContent>
           </Card>
@@ -95,11 +95,11 @@ export default function Landing() {
           <Card className="text-center">
             <CardHeader>
               <Bot className="w-12 h-12 text-purple-500 mx-auto mb-4" />
-              <CardTitle>AI智能助手</CardTitle>
+              <CardTitle>AI Smart Assistant</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                AI助手帮您分析客户数据，生成邮件模板，提供销售建议和策略
+                AI assistant helps analyze customer data, generate email templates, and provide sales recommendations and strategies
               </CardDescription>
             </CardContent>
           </Card>
@@ -107,11 +107,11 @@ export default function Landing() {
           <Card className="text-center">
             <CardHeader>
               <BarChart3 className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-              <CardTitle>数据分析洞察</CardTitle>
+              <CardTitle>Data Analytics Insights</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                直观的仪表板展示客户转化率、跟进情况等关键业务指标
+                Intuitive dashboard displaying key business metrics like customer conversion rates and follow-up status
               </CardDescription>
             </CardContent>
           </Card>
@@ -119,11 +119,11 @@ export default function Landing() {
           <Card className="text-center">
             <CardHeader>
               <Shield className="w-12 h-12 text-red-500 mx-auto mb-4" />
-              <CardTitle>数据安全保障</CardTitle>
+              <CardTitle>Data Security Protection</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                企业级安全保护，数据加密存储，确保您的客户信息安全
+                Enterprise-grade security protection with encrypted data storage to ensure your customer information is safe
               </CardDescription>
             </CardContent>
           </Card>
@@ -131,11 +131,11 @@ export default function Landing() {
           <Card className="text-center">
             <CardHeader>
               <Zap className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-              <CardTitle>简单易用</CardTitle>
+              <CardTitle>Simple and Easy to Use</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                无需复杂培训，直观的界面设计，5分钟即可上手使用
+                No complex training required, intuitive interface design, get up and running in 5 minutes
               </CardDescription>
             </CardContent>
           </Card>
@@ -145,13 +145,13 @@ export default function Landing() {
       {/* CTA Section */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">准备开始了吗？</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
           <p className="text-xl mb-8 opacity-90">
-            加入数千家企业的行列，用AI技术提升您的客户管理效率
+            Join thousands of businesses using AI technology to improve customer management efficiency
           </p>
           <Link to="/login">
             <Button size="lg" variant="secondary">
-              立即免费注册
+              Sign Up for Free Now
             </Button>
           </Link>
         </div>
@@ -168,7 +168,7 @@ export default function Landing() {
               <span className="text-xl font-bold">AI Micro CRM</span>
             </div>
             <div className="text-center text-gray-400">
-              <p>&copy; 2024 AI Micro CRM. 保留所有权利。</p>
+              <p>&copy; 2024 AI Micro CRM. All rights reserved.</p>
             </div>
           </div>
         </div>
