@@ -18,7 +18,7 @@ export function useAIConversations() {
     queryKey: ['ai-conversations'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('ai_conversations')
+        .from('ai_conversations' as any)
         .select('*')
         .order('created_at', { ascending: false });
       
