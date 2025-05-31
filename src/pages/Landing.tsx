@@ -3,172 +3,222 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot, Users, Calendar, BarChart3, Shield, Zap } from 'lucide-react';
+import { Bot, Users, Calendar, BarChart3, Shield, Zap, ArrowRight, CheckCircle } from 'lucide-react';
 
 export default function Landing() {
   const [email, setEmail] = useState('');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="container mx-auto px-4 py-6">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <Bot className="w-5 h-5 text-white" />
+      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <nav className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                <Bot className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-2xl font-bold text-gray-900">Follo</span>
             </div>
-            <span className="text-xl font-bold">AI Micro CRM</span>
-          </div>
-          <div className="space-x-4">
-            <Link to="/login">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
-            <Link to="/login">
-              <Button>Get Started Free</Button>
-            </Link>
-          </div>
-        </nav>
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">Features</a>
+              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
+              <a href="#about" className="text-gray-600 hover:text-gray-900 transition-colors">About</a>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link to="/login">
+                <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/login">
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          </nav>
+        </div>
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          AI-Powered Customer Relationship Management
-        </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Leverage AI technology to easily manage customer relationships, automate follow-up reminders, and boost sales efficiency.
-          A simple and intuitive CRM solution designed for small to medium businesses.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-          <input
-            type="email"
-            placeholder="Enter your email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="px-4 py-3 rounded-lg border border-gray-300 w-full sm:w-80"
-          />
-          <Link to="/login">
-            <Button size="lg" className="w-full sm:w-auto">
-              Start Using Now
-            </Button>
-          </Link>
+      <section className="pt-20 pb-32 bg-gradient-to-b from-gray-50 to-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center px-4 py-2 bg-blue-50 rounded-full mb-8">
+              <span className="text-blue-600 text-sm font-medium">✨ AI-Powered CRM for Modern Teams</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8 leading-tight">
+              Follow up with
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> every lead</span>
+            </h1>
+            
+            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Follo uses AI to help you manage customer relationships, automate follow-ups, and never miss an opportunity. 
+              Simple, powerful, and designed for teams that care about growth.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Enter your work email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-6 py-4 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-gray-900 placeholder-gray-500"
+              />
+              <Link to="/login" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl font-semibold">
+                  Start Free Trial
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+            </div>
+            
+            <div className="flex items-center justify-center space-x-6 text-sm text-gray-500">
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                14-day free trial
+              </div>
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                No credit card required
+              </div>
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                Cancel anytime
+              </div>
+            </div>
+          </div>
         </div>
-        <p className="text-sm text-gray-500">
-          Free trial • No credit card required • Cancel anytime
-        </p>
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">Why Choose AI Micro CRM?</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            We focus on providing simple, efficient customer management tools that let you focus on business growth
-          </p>
-        </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <Card className="text-center">
-            <CardHeader>
-              <Users className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-              <CardTitle>Smart Customer Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Centrally manage all customer information with intelligent categorization of prospects, closed deals, and inactive customers
-              </CardDescription>
-            </CardContent>
-          </Card>
+      <section id="features" className="py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">Everything you need to grow</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Powerful features designed to help small and medium businesses manage customer relationships effortlessly
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
+              <CardHeader className="pb-4">
+                <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                  <Users className="w-7 h-7 text-blue-600" />
+                </div>
+                <CardTitle className="text-xl font-semibold text-gray-900">Smart Customer Management</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <CardDescription className="text-gray-600 leading-relaxed">
+                  Organize all your customers with intelligent categorization. Track prospects, deals, and relationships in one place.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <Card className="text-center">
-            <CardHeader>
-              <Calendar className="w-12 h-12 text-green-500 mx-auto mb-4" />
-              <CardTitle>Automated Follow-up Reminders</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Based on customer-specific follow-up cycles, automatically remind you of clients who need contact, never miss an opportunity
-              </CardDescription>
-            </CardContent>
-          </Card>
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
+              <CardHeader className="pb-4">
+                <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
+                  <Calendar className="w-7 h-7 text-green-600" />
+                </div>
+                <CardTitle className="text-xl font-semibold text-gray-900">Automated Follow-ups</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <CardDescription className="text-gray-600 leading-relaxed">
+                  Never miss a follow-up again. AI-powered reminders based on customer behavior and interaction history.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <Card className="text-center">
-            <CardHeader>
-              <Bot className="w-12 h-12 text-purple-500 mx-auto mb-4" />
-              <CardTitle>AI Smart Assistant</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                AI assistant helps analyze customer data, generate email templates, and provide sales recommendations and strategies
-              </CardDescription>
-            </CardContent>
-          </Card>
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
+              <CardHeader className="pb-4">
+                <div className="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-6">
+                  <Bot className="w-7 h-7 text-purple-600" />
+                </div>
+                <CardTitle className="text-xl font-semibold text-gray-900">AI Assistant</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <CardDescription className="text-gray-600 leading-relaxed">
+                  Get insights, email templates, and sales recommendations powered by artificial intelligence.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <Card className="text-center">
-            <CardHeader>
-              <BarChart3 className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-              <CardTitle>Data Analytics Insights</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Intuitive dashboard displaying key business metrics like customer conversion rates and follow-up status
-              </CardDescription>
-            </CardContent>
-          </Card>
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
+              <CardHeader className="pb-4">
+                <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center mb-6">
+                  <BarChart3 className="w-7 h-7 text-orange-600" />
+                </div>
+                <CardTitle className="text-xl font-semibold text-gray-900">Analytics Dashboard</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <CardDescription className="text-gray-600 leading-relaxed">
+                  Track conversion rates, follow-up effectiveness, and customer engagement with beautiful dashboards.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <Card className="text-center">
-            <CardHeader>
-              <Shield className="w-12 h-12 text-red-500 mx-auto mb-4" />
-              <CardTitle>Data Security Protection</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Enterprise-grade security protection with encrypted data storage to ensure your customer information is safe
-              </CardDescription>
-            </CardContent>
-          </Card>
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
+              <CardHeader className="pb-4">
+                <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center mb-6">
+                  <Shield className="w-7 h-7 text-red-600" />
+                </div>
+                <CardTitle className="text-xl font-semibold text-gray-900">Enterprise Security</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <CardDescription className="text-gray-600 leading-relaxed">
+                  Your data is protected with enterprise-grade security, encryption, and compliance standards.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <Card className="text-center">
-            <CardHeader>
-              <Zap className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-              <CardTitle>Simple and Easy to Use</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                No complex training required, intuitive interface design, get up and running in 5 minutes
-              </CardDescription>
-            </CardContent>
-          </Card>
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
+              <CardHeader className="pb-4">
+                <div className="w-14 h-14 bg-yellow-100 rounded-2xl flex items-center justify-center mb-6">
+                  <Zap className="w-7 h-7 text-yellow-600" />
+                </div>
+                <CardTitle className="text-xl font-semibold text-gray-900">Quick Setup</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <CardDescription className="text-gray-600 leading-relaxed">
+                  Get started in minutes, not hours. Intuitive interface that requires no training or complex setup.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
+      <section className="py-24 bg-gradient-to-r from-blue-600 to-purple-600">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join thousands of businesses using AI technology to improve customer management efficiency
+          <h2 className="text-4xl font-bold text-white mb-6">Ready to grow your business?</h2>
+          <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
+            Join thousands of teams using Follo to manage customer relationships and boost sales efficiency
           </p>
           <Link to="/login">
-            <Button size="lg" variant="secondary">
-              Sign Up for Free Now
+            <Button size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 rounded-xl font-semibold text-lg">
+              Start Your Free Trial
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-gray-900 text-white py-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
+            <div className="flex items-center space-x-3 mb-8 md:mb-0">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                <Bot className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold">AI Micro CRM</span>
+              <span className="text-2xl font-bold">Follo</span>
             </div>
             <div className="text-center text-gray-400">
-              <p>&copy; 2024 AI Micro CRM. All rights reserved.</p>
+              <p>&copy; 2024 Follo. All rights reserved.</p>
             </div>
           </div>
         </div>
