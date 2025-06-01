@@ -47,15 +47,15 @@ export function useCreateInteraction() {
       // Also update the client's last_contact timestamp
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       toast({
-        title: "联系记录添加成功",
-        description: "新的联系记录已保存",
+        title: "Contact record added successfully",
+        description: "New contact record has been saved",
       });
     },
     onError: (error) => {
       console.error('Error creating interaction:', error);
       toast({
-        title: "添加失败",
-        description: "添加联系记录时出现错误",
+        title: "Failed to add record",
+        description: "An error occurred while adding the contact record",
         variant: "destructive",
       });
     }

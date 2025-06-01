@@ -55,72 +55,72 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>添加新客户</DialogTitle>
+          <DialogTitle>Add New Client</DialogTitle>
           <DialogDescription>
-            填写客户基本信息以添加到系统中
+            Fill in the client's basic information to add them to the system
           </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">客户姓名 *</Label>
+            <Label htmlFor="name">Client Name *</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="请输入客户姓名"
+              placeholder="Enter client name"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">邮箱地址</Label>
+            <Label htmlFor="email">Email Address</Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="请输入邮箱地址"
+              placeholder="Enter email address"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">电话号码</Label>
+            <Label htmlFor="phone">Phone Number</Label>
             <Input
               id="phone"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              placeholder="请输入电话号码"
+              placeholder="Enter phone number"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="company">公司名称</Label>
+            <Label htmlFor="company">Company Name</Label>
             <Input
               id="company"
               value={formData.company}
               onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-              placeholder="请输入公司名称"
+              placeholder="Enter company name"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">备注</Label>
+            <Label htmlFor="notes">Notes</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="请输入客户备注信息"
+              placeholder="Enter client notes"
               rows={3}
             />
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              取消
+              Cancel
             </Button>
             <Button type="submit" disabled={createClient.isPending}>
-              {createClient.isPending ? '添加中...' : '添加客户'}
+              {createClient.isPending ? 'Adding...' : 'Add Client'}
             </Button>
           </div>
         </form>

@@ -57,15 +57,15 @@ export function useCreateClient() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       toast({
-        title: "客户添加成功",
-        description: "新客户已成功添加到系统中",
+        title: "Client added successfully",
+        description: "New client has been added to the system",
       });
     },
     onError: (error) => {
       console.error('Error creating client:', error);
       toast({
-        title: "添加失败",
-        description: "添加客户时出现错误，请重试",
+        title: "Failed to add client",
+        description: "An error occurred while adding the client, please try again",
         variant: "destructive",
       });
     }
@@ -90,15 +90,15 @@ export function useUpdateClient() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       toast({
-        title: "更新成功",
-        description: "客户信息已更新",
+        title: "Update successful",
+        description: "Client information has been updated",
       });
     },
     onError: (error) => {
       console.error('Error updating client:', error);
       toast({
-        title: "更新失败",
-        description: "更新客户信息时出现错误",
+        title: "Update failed",
+        description: "An error occurred while updating client information",
         variant: "destructive",
       });
     }
@@ -120,15 +120,15 @@ export function useDeleteClient() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       toast({
-        title: "删除成功",
-        description: "客户已从系统中删除",
+        title: "Delete successful",
+        description: "Client has been removed from the system",
       });
     },
     onError: (error) => {
       console.error('Error deleting client:', error);
       toast({
-        title: "删除失败",
-        description: "删除客户时出现错误",
+        title: "Delete failed",
+        description: "An error occurred while deleting the client",
         variant: "destructive",
       });
     }

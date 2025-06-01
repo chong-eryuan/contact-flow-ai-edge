@@ -24,9 +24,9 @@ export default function Clients() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "潜在": return "bg-yellow-100 text-yellow-800";
-      case "已成交": return "bg-green-100 text-green-800";
-      case "冷淡": return "bg-gray-100 text-gray-800";
+      case "Prospect": return "bg-yellow-100 text-yellow-800";
+      case "Closed": return "bg-green-100 text-green-800";
+      case "Cold": return "bg-gray-100 text-gray-800";
       default: return "bg-blue-100 text-blue-800";
     }
   };
@@ -37,7 +37,7 @@ export default function Clients() {
     return (
       <div className="p-6">
         <div className="text-center text-red-600">
-          加载客户数据时出现错误: {error.message}
+          Error loading client data: {error.message}
         </div>
       </div>
     );
@@ -49,13 +49,13 @@ export default function Clients() {
         <div className="flex items-center gap-4">
           <SidebarTrigger />
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">客户管理</h1>
-            <p className="text-gray-600">管理您的所有客户信息</p>
+            <h1 className="text-3xl font-bold text-gray-900">Client Management</h1>
+            <p className="text-gray-600">Manage all your client information</p>
           </div>
         </div>
         <Button onClick={() => setIsAddDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
-          添加客户
+          Add Client
         </Button>
       </div>
 
@@ -63,34 +63,34 @@ export default function Clients() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="w-5 h-5" />
-            客户列表
+            Client List
           </CardTitle>
           <CardDescription>
-            查看和管理您的客户
+            View and manage your clients
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="mb-6">
             <div className="text-sm text-gray-600">
-              总共 {clients.length} 个客户
+              Total {clients.length} clients
             </div>
           </div>
           
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-6 h-6 animate-spin" />
-              <span className="ml-2">加载中...</span>
+              <span className="ml-2">Loading...</span>
             </div>
           ) : filteredClients.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-              <p>暂无客户</p>
+              <p>No clients found</p>
               <Button 
                 className="mt-4" 
                 variant="outline"
                 onClick={() => setIsAddDialogOpen(true)}
               >
-                添加第一个客户
+                Add your first client
               </Button>
             </div>
           ) : (
@@ -103,7 +103,7 @@ export default function Clients() {
                     </div>
                     <div>
                       <h3 className="font-medium">{client.name}</h3>
-                      <p className="text-sm text-gray-600">{client.email || '无邮箱'}</p>
+                      <p className="text-sm text-gray-600">{client.email || 'No email'}</p>
                       {client.company && (
                         <p className="text-sm text-gray-500">{client.company}</p>
                       )}
@@ -111,15 +111,15 @@ export default function Clients() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="text-sm font-medium">创建时间</p>
+                      <p className="text-sm font-medium">Created</p>
                       <p className="text-sm text-gray-600">
-                        {client.created_at ? new Date(client.created_at).toLocaleDateString('zh-CN') : '未知'}
+                        {client.created_at ? new Date(client.created_at).toLocaleDateString('en-US') : 'Unknown'}
                       </p>
                     </div>
                     <Button asChild variant="outline" size="sm">
                       <Link to={`/clients/${client.id}`}>
                         <Eye className="w-4 h-4 mr-2" />
-                        查看详情
+                        View Details
                       </Link>
                     </Button>
                   </div>
