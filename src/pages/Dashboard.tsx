@@ -9,6 +9,7 @@ import { useDeals } from '@/hooks/useDeals';
 import { useFollowUps } from '@/hooks/useFollowUps';
 import { useTasks } from '@/hooks/useTasks';
 import { useCompleteFollowUp } from '@/hooks/useFollowUps';
+import { TodaysMeetings } from '@/components/TodaysMeetings';
 
 export default function Dashboard() {
   const { data: clients = [] } = useClients();
@@ -129,6 +130,9 @@ export default function Dashboard() {
           </Card>
         ))}
       </div>
+
+      {/* Today's Meetings - AI Meeting Prep */}
+      <TodaysMeetings />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Overdue Follow-ups */}
