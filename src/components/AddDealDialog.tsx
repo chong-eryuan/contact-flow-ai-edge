@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,171 +9,151 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useCreateDeal } from '@/hooks/useDeals';
 import { useClients } from '@/hooks/useClients';
 import { usePipelineStages } from '@/hooks/usePipelineStages';
+import { Plus } from 'lucide-react';
 
-interface AddDealDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-export function AddDealDialog({ open, onOpenChange }: AddDealDialogProps) {
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    value: '',
-    client_id: '',
-    stage_id: '',
-    probability: '50',
-    expected_close_date: '',
-    status: 'active'
-  });
+export function AddDealDialog() {
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [value, setValue] = useState('');
+  const [clientId, setClientId] = useState('');
+  const [stageId, setStageId] = useState('');
+  const [probability, setProbability] = useState('50');
+  const [expectedCloseDate, setExpectedCloseDate] = useState('');
 
   const createDeal = useCreateDeal();
-  const { data: clients = [] } = useClients();
-  const { data: stages = [] } = usePipelineStages();
+  const { data: clients } = useClients();
+  const { data: stages } = usePipelineStages();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    try {
-      await createDeal.mutateAsync({
-        ...formData,
-        client_id: formData.client_id || null,
-        stage_id: formData.stage_id || null,
-        value: formData.value ? parseFloat(formData.value) : null,
-        probability: parseInt(formData.probability),
-        expected_close_date: formData.expected_close_date || null,
-        description: formData.description || null,
-        actual_close_date: null
-      });
+    createDeal.mutate({
+      title,
+      description: description || null,
+      value: value ? parseFloat(value) : null,
+      client_id: clientId || null,
+      stage_id: stageId || null,
+      probability: parseInt(probability),
+      expected_close_date: expectedCloseDate || null,
+      actual_close_date: null,
+      status: 'active' as const
+    });
 
-      // Reset form and close dialog
-      setFormData({
-        title: '',
-        description: '',
-        value: '',
-        client_id: '',
-        stage_id: '',
-        probability: '50',
-        expected_close_date: '',
-        status: 'active'
-      });
-      onOpenChange(false);
-    } catch (error) {
-      console.error('Error creating deal:', error);
-    }
+    // Reset form
+    setTitle('');
+    setDescription('');
+    setValue('');
+    setClientId('');
+    setStageId('');
+    setProbability('50');
+    setExpectedCloseDate('');
+    setOpen(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>
+          <Plus className="w-4 h-4 mr-2" />
+          Add Deal
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Create New Deal</DialogTitle>
-          <DialogDescription>
-            Add a new deal to your sales pipeline
-          </DialogDescription>
+          <DialogTitle>Add New Deal</DialogTitle>
         </DialogHeader>
-        
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Deal Title *</Label>
+          <div>
+            <Label htmlFor="title">Deal Title</Label>
             <Input
               id="title"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="Enter deal title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               required
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="client_id">Client</Label>
-              <Select value={formData.client_id} onValueChange={(value) => setFormData({ ...formData, client_id: value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select client" />
-                </SelectTrigger>
-                <SelectContent>
-                  {clients.map((client) => (
-                    <SelectItem key={client.id} value={client.id}>
-                      {client.name} {client.company && `- ${client.company}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <Label htmlFor="client">Client</Label>
+            <Select value={clientId} onValueChange={setClientId}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a client" />
+              </SelectTrigger>
+              <SelectContent>
+                {clients?.map((client) => (
+                  <SelectItem key={client.id} value={client.id}>
+                    {client.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="stage_id">Pipeline Stage</Label>
-              <Select value={formData.stage_id} onValueChange={(value) => setFormData({ ...formData, stage_id: value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select stage" />
-                </SelectTrigger>
-                <SelectContent>
-                  {stages.map((stage) => (
-                    <SelectItem key={stage.id} value={stage.id}>
-                      {stage.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <Label htmlFor="stage">Pipeline Stage</Label>
+            <Select value={stageId} onValueChange={setStageId}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a stage" />
+              </SelectTrigger>
+              <SelectContent>
+                {stages?.map((stage) => (
+                  <SelectItem key={stage.id} value={stage.id}>
+                    {stage.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div>
               <Label htmlFor="value">Deal Value</Label>
               <Input
                 id="value"
                 type="number"
-                value={formData.value}
-                onChange={(e) => setFormData({ ...formData, value: e.target.value })}
-                placeholder="Enter deal value"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder="0.00"
               />
             </div>
 
-            <div className="space-y-2">
+            <div>
               <Label htmlFor="probability">Probability (%)</Label>
               <Input
                 id="probability"
                 type="number"
                 min="0"
                 max="100"
-                value={formData.probability}
-                onChange={(e) => setFormData({ ...formData, probability: e.target.value })}
-                placeholder="Enter probability"
+                value={probability}
+                onChange={(e) => setProbability(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="expected_close_date">Expected Close Date</Label>
+          <div>
+            <Label htmlFor="expectedCloseDate">Expected Close Date</Label>
             <Input
-              id="expected_close_date"
+              id="expectedCloseDate"
               type="date"
-              value={formData.expected_close_date}
-              onChange={(e) => setFormData({ ...formData, expected_close_date: e.target.value })}
+              value={expectedCloseDate}
+              onChange={(e) => setExpectedCloseDate(e.target.value)}
             />
           </div>
 
-          <div className="space-y-2">
+          <div>
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Enter deal description"
-              rows={3}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Deal details..."
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={createDeal.isPending}>
-              {createDeal.isPending ? 'Creating...' : 'Create Deal'}
-            </Button>
-          </div>
+          <Button type="submit" className="w-full">
+            Create Deal
+          </Button>
         </form>
       </DialogContent>
     </Dialog>
