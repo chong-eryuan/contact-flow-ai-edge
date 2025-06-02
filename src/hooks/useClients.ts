@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/AuthProvider';
@@ -15,6 +14,12 @@ export interface Client {
   last_contact: string | null;
   created_at: string | null;
   user_id: string;
+  // New CRM fields
+  industry: string | null;
+  deal_size: number | null;
+  lead_score: number;
+  stage: string;
+  priority: string;
 }
 
 export function useClients() {

@@ -75,36 +75,51 @@ export type Database = {
         Row: {
           company: string | null
           created_at: string | null
+          deal_size: number | null
           email: string | null
           id: string
+          industry: string | null
           last_contact: string | null
+          lead_score: number | null
           name: string
           notes: string | null
           phone: string | null
+          priority: string | null
+          stage: string | null
           tags: string[] | null
           user_id: string
         }
         Insert: {
           company?: string | null
           created_at?: string | null
+          deal_size?: number | null
           email?: string | null
           id?: string
+          industry?: string | null
           last_contact?: string | null
+          lead_score?: number | null
           name: string
           notes?: string | null
           phone?: string | null
+          priority?: string | null
+          stage?: string | null
           tags?: string[] | null
           user_id: string
         }
         Update: {
           company?: string | null
           created_at?: string | null
+          deal_size?: number | null
           email?: string | null
           id?: string
+          industry?: string | null
           last_contact?: string | null
+          lead_score?: number | null
           name?: string
           notes?: string | null
           phone?: string | null
+          priority?: string | null
+          stage?: string | null
           tags?: string[] | null
           user_id?: string
         }
@@ -114,6 +129,172 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      communications: {
+        Row: {
+          client_id: string | null
+          completed_at: string | null
+          content: string | null
+          created_at: string
+          duration_minutes: number | null
+          id: string
+          participants: string[] | null
+          scheduled_at: string | null
+          subject: string | null
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_id?: string | null
+          completed_at?: string | null
+          content?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          participants?: string[] | null
+          scheduled_at?: string | null
+          subject?: string | null
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string | null
+          completed_at?: string | null
+          content?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          participants?: string[] | null
+          scheduled_at?: string | null
+          subject?: string | null
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communications_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deals: {
+        Row: {
+          actual_close_date: string | null
+          client_id: string | null
+          created_at: string
+          description: string | null
+          expected_close_date: string | null
+          id: string
+          probability: number | null
+          stage_id: string | null
+          status: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          value: number | null
+        }
+        Insert: {
+          actual_close_date?: string | null
+          client_id?: string | null
+          created_at?: string
+          description?: string | null
+          expected_close_date?: string | null
+          id?: string
+          probability?: number | null
+          stage_id?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          value?: number | null
+        }
+        Update: {
+          actual_close_date?: string | null
+          client_id?: string | null
+          created_at?: string
+          description?: string | null
+          expected_close_date?: string | null
+          id?: string
+          probability?: number | null
+          stage_id?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deals_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "pipeline_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      follow_ups: {
+        Row: {
+          ai_suggested: boolean | null
+          client_id: string | null
+          completed_at: string | null
+          conditions: Json | null
+          created_at: string
+          description: string | null
+          id: string
+          scheduled_for: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          ai_suggested?: boolean | null
+          client_id?: string | null
+          completed_at?: string | null
+          conditions?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          scheduled_for: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          ai_suggested?: boolean | null
+          client_id?: string | null
+          completed_at?: string | null
+          conditions?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          scheduled_for?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follow_ups_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
             referencedColumns: ["id"]
           },
         ]
@@ -204,6 +385,86 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           value?: number | null
+        }
+        Relationships: []
+      }
+      meeting_notes: {
+        Row: {
+          action_items: Json | null
+          ai_generated: boolean | null
+          client_id: string | null
+          created_at: string
+          duration_minutes: number | null
+          id: string
+          meeting_date: string | null
+          meeting_title: string | null
+          participants: string[] | null
+          summary: string | null
+          transcript: string | null
+          user_id: string
+        }
+        Insert: {
+          action_items?: Json | null
+          ai_generated?: boolean | null
+          client_id?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          meeting_date?: string | null
+          meeting_title?: string | null
+          participants?: string[] | null
+          summary?: string | null
+          transcript?: string | null
+          user_id: string
+        }
+        Update: {
+          action_items?: Json | null
+          ai_generated?: boolean | null
+          client_id?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          meeting_date?: string | null
+          meeting_title?: string | null
+          participants?: string[] | null
+          summary?: string | null
+          transcript?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pipeline_stages: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          name: string
+          order_index: number
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          order_index: number
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          order_index?: number
+          user_id?: string
         }
         Relationships: []
       }
@@ -343,6 +604,75 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_tasks: {
+        Row: {
+          assigned_to: string | null
+          client_id: string | null
+          completed_at: string | null
+          created_at: string
+          created_by: string
+          deal_id: string | null
+          description: string | null
+          due_date: string | null
+          escalation_rules: Json | null
+          id: string
+          priority: string | null
+          status: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by: string
+          deal_id?: string | null
+          description?: string | null
+          due_date?: string | null
+          escalation_rules?: Json | null
+          id?: string
+          priority?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string
+          deal_id?: string | null
+          description?: string | null
+          due_date?: string | null
+          escalation_rules?: Json | null
+          id?: string
+          priority?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_tasks_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_tasks_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
             referencedColumns: ["id"]
           },
         ]
