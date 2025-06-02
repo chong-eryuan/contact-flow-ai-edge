@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,21 +9,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useCreateDeal } from '@/hooks/useDeals';
 import { useClients } from '@/hooks/useClients';
 import { usePipelineStages } from '@/hooks/usePipelineStages';
-import { Plus } from 'lucide-react';
 
-export function AddDealDialog() {
-  const [open, setOpen] = useState(false);
+interface AddDealDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function AddDealDialog({ open, onOpenChange }: AddDealDialogProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [value, setValue] = useState('');
+  const [probability, setProbability] = useState('50');
   const [clientId, setClientId] = useState('');
   const [stageId, setStageId] = useState('');
-  const [probability, setProbability] = useState('50');
   const [expectedCloseDate, setExpectedCloseDate] = useState('');
 
   const createDeal = useCreateDeal();
-  const { data: clients } = useClients();
-  const { data: stages } = usePipelineStages();
+  const { data: clients = [] } = useClients();
+  const { data: stages = [] } = usePipelineStages();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,72 +35,69 @@ export function AddDealDialog() {
       title,
       description: description || null,
       value: value ? parseFloat(value) : null,
+      probability: parseInt(probability),
       client_id: clientId || null,
       stage_id: stageId || null,
-      probability: parseInt(probability),
       expected_close_date: expectedCloseDate || null,
-      actual_close_date: null,
-      status: 'active' as const
+      status: 'active'
     });
 
     // Reset form
     setTitle('');
     setDescription('');
     setValue('');
+    setProbability('50');
     setClientId('');
     setStageId('');
-    setProbability('50');
     setExpectedCloseDate('');
-    setOpen(false);
+    onOpenChange(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Deal
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add New Deal</DialogTitle>
+          <DialogDescription>
+            Create a new deal in your sales pipeline.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="title">Deal Title</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter deal title"
               required
             />
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="client">Client</Label>
             <Select value={clientId} onValueChange={setClientId}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a client" />
               </SelectTrigger>
               <SelectContent>
-                {clients?.map((client) => (
+                {clients.map((client) => (
                   <SelectItem key={client.id} value={client.id}>
-                    {client.name}
+                    {client.name} {client.company && `(${client.company})`}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="stage">Pipeline Stage</Label>
             <Select value={stageId} onValueChange={setStageId}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a stage" />
               </SelectTrigger>
               <SelectContent>
-                {stages?.map((stage) => (
+                {stages.map((stage) => (
                   <SelectItem key={stage.id} value={stage.id}>
                     {stage.name}
                   </SelectItem>
@@ -107,18 +107,18 @@ export function AddDealDialog() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="value">Deal Value</Label>
+            <div className="space-y-2">
+              <Label htmlFor="value">Deal Value ($)</Label>
               <Input
                 id="value"
                 type="number"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                placeholder="0.00"
+                placeholder="0"
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="probability">Probability (%)</Label>
               <Input
                 id="probability"
@@ -131,7 +131,7 @@ export function AddDealDialog() {
             </div>
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="expectedCloseDate">Expected Close Date</Label>
             <Input
               id="expectedCloseDate"
@@ -141,19 +141,25 @@ export function AddDealDialog() {
             />
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Deal details..."
+              placeholder="Deal description..."
+              rows={3}
             />
           </div>
 
-          <Button type="submit" className="w-full">
-            Create Deal
-          </Button>
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={createDeal.isPending}>
+              {createDeal.isPending ? 'Creating...' : 'Create Deal'}
+            </Button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>
